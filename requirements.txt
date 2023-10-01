@@ -3,3 +3,4 @@ pandas==1.4.3
 plotly==5.10.0
 gunicorn
 dash-tools
+flask==2.2.2
