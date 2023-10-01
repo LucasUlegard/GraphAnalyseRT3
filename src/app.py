@@ -229,4 +229,4 @@ def update_graph(names, data, title, selected_data, toggle, reference_line, star
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=False)#, port=8071)
