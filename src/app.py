@@ -27,60 +27,60 @@ config = {'displaylogo': False,
                                   ]}
 
 app.layout = html.Div([
-    html.Div([
-        dcc.Upload(
-            id='uploadData',
-            children=html.Div([
-                html.Img(id='Upload_Icon', src=app.get_asset_url('upload.png')),
-                html.P(['Drag and Drop or ', html.A('Select a file to upload', id='Upload_Link')], id='Upload_Text'),
-            ], id='upload_section_content'),
-            multiple=True
-        ),
-    ]),
-    html.Div([
-        html.Div([
-            dcc.Graph(id='graph', figure=blank_fig(), config=config)
-        ], id='graph-container'),
-        html.Div([
-            html.Div([
-                html.P('Enter name of graph:'),
-                dcc.Input(id='graph_name', placeholder='Type sometihng..'),
-                html.P('Enable reference line:'),
                 html.Div([
-                    dcc.Checklist(id='reference_toggle', options=['Enabled']),
-                    dcc.Slider(id='reference_slider', min=0, max=10, marks=None,
-                               tooltip={"placement": "bottom", "always_visible": True})
-                ])
-            ], id='thrd1', className='thrd'),
-            html.Div([
-                html.P('Select data:'),
-                dcc.Dropdown(id='data_dropdown', multi=False)
-            ], id='thrd2', className='thrd'),
-            html.Div([
-                html.P('Remove values from start:'),
-                dcc.Slider(
-                    id='start_slider',
-                    min=0,
-                    max=10,
-                    marks=None,
-                    tooltip={"placement": "bottom", "always_visible": True},
-                    step=1,
-                    value=0),
-                html.P('Remove values from end:'),
-                dcc.Slider(
-                    id='end_slider',
-                    min=0,
-                    max=10,
-                    marks=None,
-                    tooltip={"placement": "bottom", "always_visible": True},
-                    step=1,
-                    value=0),
-            ], id='thrd3', className='thrd')
-        ], id='inputs')
-    ], id='graph-and-inputs'),
-    dcc.Store(id='data_store_names'),
-    dcc.Store(id='data_store_dfs')
-], id='layout')
+                    dcc.Upload(
+                        id='uploadData',
+                        children=html.Div([
+                        html.Img(id = 'Upload_Icon', src = app.get_asset_url('upload.png')),
+                        html.P(['Drag and Drop or ',html.A('Select a file to upload', id = 'Upload_Link')], id = 'Upload_Text'),
+                        ], id = 'upload_section_content'),
+                        multiple=True
+                        ),
+                ]),
+                html.Div([
+                    html.Div([
+                        dcc.Graph(id = 'graph', figure = blank_fig(), config = config)
+                    ], id = 'graph-container'),
+                    html.Div([
+                        html.Div([
+                            html.P('Enter name of graph:'),
+                            dcc.Input(id = 'graph_name', placeholder = 'Type sometihng..'),
+                            html.P('Enable reference line:'),
+                            html.Div([
+                                dcc.Checklist(id = 'reference_toggle', options = ['Enabled']),
+                                dcc.Slider(id = 'reference_slider', min = 0, max = 10, marks = None, tooltip={"placement": "bottom", "always_visible": True})
+                            ])
+                        ], id = 'thrd1', className = 'thrd'),
+                        html.Div([
+                            html.P('Select data:'),
+                            dcc.Dropdown(id = 'data_dropdown', multi = False)
+                        ], id = 'thrd2', className = 'thrd'),
+                        html.Div([
+                            html.P('Remove values from start:'),
+                            dcc.Slider(
+                                id = 'start_slider',
+                                 min = 0,
+                                 max = 10,
+                                 marks = None,
+                                 tooltip={"placement": "bottom", "always_visible": True},
+                                 step = 1,
+                                 value = 0),
+                            html.P('Remove values from end:'),
+                            dcc.Slider(
+                                id = 'end_slider',
+                                min = 0,
+                                max = 10,
+                                marks = None,
+                                tooltip={"placement": "bottom", "always_visible": True},
+                                 step = 1,
+                                 value = 0),
+                        ], id = 'thrd3', className = 'thrd')
+                    ], id = 'inputs')
+                ],id = 'graph-and-inputs'),
+                dcc.Store(id = 'data_store_names'),
+                dcc.Store(id = 'data_store_dfs')
+], id = 'layout')
+
 
 
 def parse_contents(contents, filename, date):
@@ -93,7 +93,7 @@ def parse_contents(contents, filename, date):
             df = pd.read_csv(
                 io.StringIO(decoded.decode('utf-8')))
         elif 'xls' in filename:
-            # Assume that the user uploaded an Excel file
+            # Assume that the user uploaded an excel file
             df = pd.read_excel(io.BytesIO(decoded))
     except Exception as e:
         print(e)
@@ -101,6 +101,10 @@ def parse_contents(contents, filename, date):
             'There was an error processing this file.'
         ])
     return [filename, df]
+
+
+
+
 
 
 @app.callback(Output('data_store_names', 'data'),
@@ -130,7 +134,6 @@ def update_options(data):
         return data
     else:
         return []
-
 
 @app.callback(
     [Output('reference_slider', 'min'),
@@ -166,7 +169,7 @@ def update_reference_min_max(data, names, selected_names):
     Input('data_store_names', 'data')
 )
 def update_slider_ranges(dropdown, data, names):
-    if names != None and dropdown is not None:
+    if names != None and dropdown != None:
         index = names.index(dropdown)
         data = pd.DataFrame.from_dict(data[index])
         max_val = len(data)
@@ -194,29 +197,29 @@ def update_graph(names, data, title, selected_data, toggle, reference_line, star
             df = pd.DataFrame.from_dict(data[i])
             if names[i] == selected_data:
                 if end > 0:
-                    df = df.iloc[start: (end - end * 2)]
+                    df = df.iloc[start : (end-end*2)]
                 else:
-                    df = df.iloc[start:]
+                    df = df.iloc[start :]
             df['name'] = names[i].split('.')[0]
             dataframe = pd.concat([dataframe, df])
         try:
-            fig = px.line(dataframe, x='x', y='y', color='name')
+            fig = px.line(dataframe, x = 'x', y = 'y', color = 'name')
         except:
             fig = blank_fig()
     else:
         fig = blank_fig()
 
     fig.update_layout(
-        margin=dict(t=30, b=0, l=0, r=0),
-        title=title,
-        font=dict(color='white'),
+        margin = dict(t = 30, b = 0, l = 0, r = 0),
+        title = title,
+        font = dict(color = 'white'),
         plot_bgcolor="#1e1e1e",
         paper_bgcolor="#1e1e1e",
-    )
-    fig.update_xaxes(gridcolor='grey')
-    fig.update_yaxes(gridcolor='grey')
+        )
+    fig.update_xaxes(gridcolor = 'grey')
+    fig.update_yaxes(gridcolor = 'grey')
     if toggle == ['Enabled']:
-        fig.add_hline(y=reference_line, line_width=2, line_color='white')
+        fig.add_hline(y = reference_line, line_width = 2, line_color = 'white')
     return fig
 
 
