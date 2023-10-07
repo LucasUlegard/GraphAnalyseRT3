@@ -7,6 +7,9 @@ import io
 import pandas as pd
 
 
+app = dash.Dash(__name__) #, suppress_callback_exceptions=True)
+server = app.server
+
 
 def blank_fig():
     fig = go.Figure(go.Scatter(x=[], y = []))
@@ -24,10 +27,6 @@ config = {'displaylogo': False,
          'modeBarButtonsToAdd':['drawrect',
                                 'eraseshape'
                                ]}
-
-app = dash.Dash(__name__, suppress_callback_exceptions=True)
-server = app.server
-
 
 
 app.layout = html.Div([
@@ -99,12 +98,8 @@ def parse_contents(contents, filename, date):
             df = pd.read_excel(io.BytesIO(decoded), skiprows=10)
     except Exception as e:
         print(e)
-        return html.Div([
-            'There was an error processing this file.'
-        ])
+        return None, None
     return [filename, df]
-
-
 
 
 
@@ -156,8 +151,10 @@ def update_graph(list_of_contents, list_of_names, list_of_dates):
         dfs = []
         zipped = zip(list_of_contents, list_of_names, list_of_dates)
         for c, n, d in zipped:
-            names.append(parse_contents(c, n, d)[0])
-            dfs.append(parse_contents(c, n, d)[1].to_dict('records'))
+            result = parse_contents(c, n, d)
+            if result[0] is not None and result[1] is not None:
+                names.append(result[0])
+                dfs.append(result[1].to_dict('records'))
         return names, dfs
     else:
         return None, None
@@ -269,4 +266,4 @@ def update_graph(names, data, title, selected_data, sliders, demo_dropdown):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False) #, port=8071)
+    app.run_server(debug=False, port=8071)
