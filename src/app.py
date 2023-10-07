@@ -266,4 +266,4 @@ def update_graph(names, data, title, selected_data, sliders, demo_dropdown):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False, port=8071)
+    app.run_server(debug=False) #, port=8071)
